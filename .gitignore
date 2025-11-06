@@ -1,0 +1,22 @@
+# Example files (PDFs, images)
+examples/*.pdf
+examples/*.jpg
+examples/*.jpeg
+examples/*.png
+
+# Response outputs (exclude all JSON except schema)
+*response*.json
+*output*.json
+*result*.json
+responses/
+
+# Exception: Keep schema files
+!*schema*.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
