@@ -4,9 +4,14 @@ examples/*.jpg
 examples/*.jpeg
 examples/*.png
 
-# Response outputs
-*.json
+# Response outputs (exclude all JSON except schema)
+*response*.json
+*output*.json
+*result*.json
 responses/
+
+# Exception: Keep schema files
+!*schema*.json
 
 # OS files
 .DS_Store

@@ -1,0 +1,161 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Invoice Extraction Schema",
+  "description": "Structured output schema for AI invoice extraction",
+  "type": "object",
+  "properties": {
+    "invoiceNumber": {
+      "type": "string",
+      "description": "Invoice number found near 'Invoice No.', 'Número da Fatura', or header"
+    },
+    "invoiceDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Invoice date in YYYY-MM-DD format, found near 'Invoice Date', 'Data da Fatura'"
+    },
+    "dueDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Due date in YYYY-MM-DD format, found near 'Due Date', 'Data de Vencimento'"
+    },
+    "vendor": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Vendor name from top-left or header section, labeled 'From', 'De', or company logo area"
+        },
+        "address": {
+          "type": "string",
+          "description": "Vendor address below vendor name or near 'Address', 'Morada'"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Vendor phone number, usually near address or 'Telefone'"
+        },
+        "email": {
+          "type": "string",
+          "description": "Vendor email, near contact info, often bottom of invoice"
+        },
+        "vat": {
+          "type": "string",
+          "description": "Vendor VAT number near 'VAT', 'NIF', or 'Número de Identificação Fiscal'"
+        }
+      }
+    },
+    "customer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Customer name near 'Bill To', 'Cliente', or 'Destinatário'"
+        },
+        "address": {
+          "type": "string",
+          "description": "Customer address under customer name or labeled 'Address', 'Morada'"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Customer phone number (optional)"
+        },
+        "email": {
+          "type": "string",
+          "description": "Customer email (optional)"
+        },
+        "vat": {
+          "type": "string",
+          "description": "Customer VAT number near 'VAT', 'NIF', 'Número de Contribuinte'"
+        }
+      }
+    },
+    "financials": {
+      "type": "object",
+      "properties": {
+        "shippingCost": {
+          "type": "number",
+          "description": "Shipping cost found near 'Shipping', 'Portes', or 'Transporte'"
+        },
+        "subtotal": {
+          "type": "number",
+          "description": "Subtotal near 'Subtotal', 'Valor sem IVA'"
+        },
+        "tax": {
+          "type": "number",
+          "description": "Tax amount near 'Tax', 'IVA', 'Imposto'"
+        },
+        "taxRate": {
+          "type": "number",
+          "description": "Tax rate percentage near 'Tax Rate', 'Taxa de IVA'"
+        },
+        "total": {
+          "type": "number",
+          "description": "Total amount found near 'Total', 'Total a Pagar', often bold or bottom of invoice"
+        },
+        "currency": {
+          "type": "string",
+          "description": "ISO 4217 currency code inferred from symbols like €, EUR, $, GBP"
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "description": "Array of line items from the invoice",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Item description from invoice table under 'Description', 'Descrição'"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity under 'Qty', 'Quantidade'"
+          },
+          "unitPrice": {
+            "type": "number",
+            "description": "Unit price under 'Unit Price', 'Preço Unitário'"
+          },
+          "totalPrice": {
+            "type": "number",
+            "description": "Total price under 'Total', 'Valor Total'"
+          },
+          "taxRate": {
+            "type": "number",
+            "description": "Tax rate if specified per line, under 'IVA'"
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "itemCount": {
+          "type": "number",
+          "description": "Count of line items"
+        },
+        "totalQuantity": {
+          "type": "number",
+          "description": "Sum of all quantities"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "processedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of when the invoice was processed"
+        },
+        "fileName": {
+          "type": "string",
+          "description": "Name of the processed file"
+        },
+        "processor": {
+          "type": "string",
+          "description": "Name of the processing system"
+        }
+      }
+    }
+  }
+}
