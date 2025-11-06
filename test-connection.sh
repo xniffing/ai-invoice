@@ -3,8 +3,8 @@
 # Test script to verify Cloudflare API connection and credentials
 
 ACCOUNT_ID="9921006351e6d39ee4059dc50c134089"
-API_KEY="wSQMzqNtF011wplgjqakpQqLuKchph2tGFwQ_h_1"
-MODEL="@cf/google/gemma-2-12b-it"
+API_KEY="wSQMzqNtF011wpIgjqakpQqLuKchph2tGFwQ_h_1"
+MODEL="@cf/google/gemma-3-12b-it"
 
 echo "Testing Cloudflare Workers AI API..."
 echo "Account: ${ACCOUNT_ID}"
