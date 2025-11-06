@@ -1,0 +1,17 @@
+# Example files (PDFs, images)
+examples/*.pdf
+examples/*.jpg
+examples/*.jpeg
+examples/*.png
+
+# Response outputs
+*.json
+responses/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
