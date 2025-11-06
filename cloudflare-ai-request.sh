@@ -77,6 +77,12 @@ esac
 FILE_SIZE=$(stat -f%z "$FILE_PATH" 2>/dev/null || stat -c%s "$FILE_PATH" 2>/dev/null)
 print_info "File size: $(numfmt --to=iec-i --suffix=B $FILE_SIZE 2>/dev/null || echo "$FILE_SIZE bytes")"
 
+# Convert file to base64
+print_info "Converting file to base64..."
+FILE_BASE64=$(base64 < "$FILE_PATH" | tr -d '\n')
+BASE64_SIZE=${#FILE_BASE64}
+print_info "Base64 encoded size: $BASE64_SIZE characters"
+
 # Print request details
 echo ""
 print_info "Sending request to Cloudflare Workers AI..."
@@ -84,12 +90,38 @@ echo "  Model: $MODEL"
 echo "  File: $FILE_PATH"
 echo ""
 
+# Create JSON payload
+JSON_PAYLOAD=$(jq -n \
+  --arg image "$FILE_BASE64" \
+  --arg prompt "$SYSTEM_PROMPT" \
+  '{
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "image",
+            "source": {
+              "type": "base64",
+              "media_type": "image/jpeg",
+              "data": $image
+            }
+          },
+          {
+            "type": "text",
+            "text": $prompt
+          }
+        ]
+      }
+    ]
+  }')
+
 # Make the API request
 RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
   "$API_URL" \
   -H "Authorization: Bearer $API_KEY" \
-  -F "file=@$FILE_PATH" \
-  -F "system_prompt=$SYSTEM_PROMPT")
+  -H "Content-Type: application/json" \
+  -d "$JSON_PAYLOAD")
 
 # Extract HTTP status code (last line)
 HTTP_CODE=$(echo "$RESPONSE" | tail -n 1)
